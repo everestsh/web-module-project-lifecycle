@@ -8,7 +8,8 @@ class User extends React.Component{
         return(
             <div className='user-container '>
                 <div className="user-img">
-                    <img src='https://avatars.githubusercontent.com/u/7962407?v=4'/>
+                    {/* <img src='https://avatars.githubusercontent.com/u/7962407?v=4'/> */}
+                    <img src={user.avatar_url}/>
                 </div>
                 <div className='user-text'>
                     <h2>{user.name}</h2>
