@@ -5,27 +5,28 @@ import User from './components/User';
 import "./App.css";
 
 class App extends React.Component {
-
   state = {
-    dogImages: [],
-    input: ""
-}
-// componentDidMount() {
-//     axios.get('https://dog.ceo/api/breed/husky/images')
-//         .then( resp=> {
-//             // console.log(resp.data);
-//             //console.log(resp.data.message  );
-//             this.setState({
-//                 ...this.state,
-//                 dogImages: resp.data.message
-//             });
-//         }).catch( err=>{
-//             console.log(err);
-//         });
-// }
+    User: {},
+  }
+  componentDidMount() {
+    //https://api.github.com/users/sooof
+    axios.get('https://api.github.com/users/sooof')
+        .then( resp=> {
+            console.log(resp.data);
+            this.setState({
+                ...this.state,
+                User: resp.data
+            });
+        }).catch( err=>{
+            console.log(err);
+        });
+  }
+
+  
 
 
   render() {
+    console.log("App.js", this.state.User);
     return(<div className='App'>
       {/* <h1>Github Card</h1> */}
 
@@ -41,7 +42,8 @@ class App extends React.Component {
     
       <Switch>
         <Route exact path='/'>
-          <User />
+          <User user={this.state.User}/>
+          {/* <Follower user={this.state.User}/> */}
         </Route>
       </Switch>
     </div>);
