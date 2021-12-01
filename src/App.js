@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import {Link} from 'react-router-dom'
 import User from './components/User';
 import FollowerList from './components/FollowerList';
@@ -12,14 +12,15 @@ class App extends React.Component {
     this.state = {
       User: {},
       Followers:[
-      ]
+      ],
+      githubUser:"sooof",
+      isLoading: false
     }
   }
-
   componentDidMount() {
-    axios.get('https://api.github.com/users/sooof')
+    axios.get(`https://api.github.com/users/${this.state.githubUser}`)
       .then(resp=> {
-        console.log(resp)
+        // console.log(resp)
           this.setState({
               ...this.state,
               User: resp.data,
@@ -29,40 +30,62 @@ class App extends React.Component {
           console.log(err);
       })
   }
-  handClick = () => {
-    axios.get(`https://api.github.com/users/sooof/followers`)
+  handClickFollowers = (e) => {
+      e.preventDefault();
+      axios.get(`https://api.github.com/users/${this.state.githubUser}/followers`)
+      .then(resp=> {
+          console.log(resp);
+          this.setState({
+              ...this.state,
+              Followers: resp.data
+          })
+      })
+      .catch(err=> {
+          console.log(err);
+      })
+      this.setState({
+        ...this.state,
+        isLoading: true,
+    }); 
+  }
+  
+  handClickSearch = (e) => {
+    e.preventDefault();
+    axios.get(`https://api.github.com/users/${this.state.githubUser}`)
     .then(resp=> {
-        console.log(resp);
+      // console.log(resp)
         this.setState({
             ...this.state,
-            Followers: resp.data
-        })
+            User: resp.data,
+        });
     })
     .catch(err=> {
         console.log(err);
     })
-    this.setState({
-      ...this.state,
-      isLoading: true,
-  }); 
-}
-
+  }
+  handleChange = (e) => {
+      this.setState({
+        ...this.state,
+        githubUser: e.target.value
+    })
+  }
   render() {
+    
+    console.log("App.js user = ", this.state) 
     return(
     <div>
         <nav className="nav-bar">
             <div className="left-links">
-                <Link className="link" to='/'>GITHUB INFO</Link>
-                {/* <Link className="link" to='/products'>Products</Link>  */}
-                
+                <Link className="link" to='/'>GITHUN INFO</Link>
             </div>
             <div className="right-links">
-            <Link onClick={this.handClick} className="link" to='/'>FOLLOWERS</Link>
+                <Link onClick={this.handClickFollowers} className="link" to='/'>FOLLOWERS</Link>
                 <form className="link" >
                     <input 
+                    onChange={this.handleChange}
                     placeholder="Github Handle"
                     />
-                    <button >Search</button>
+                    <button onClick={this.handClickSearch} >Search</button>
                 </form>
             </div>
         </nav>
@@ -70,6 +93,8 @@ class App extends React.Component {
           {/* <h1>Github Card</h1> */}
           <User user={this.state.User}/>
           <FollowerList followers={this.state.Followers}/>
+          {/* <hr/> */}
+          {/* <FollowerList /> */}
         </div>
       
     </div>);
@@ -77,3 +102,4 @@ class App extends React.Component {
 }
 
 export default App;
+
