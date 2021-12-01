@@ -29,17 +29,35 @@ class App extends React.Component {
           console.log(err);
       })
   }
+  handClick = () => {
+    axios.get(`https://api.github.com/users/sooof/followers`)
+    .then(resp=> {
+        console.log(resp);
+        this.setState({
+            ...this.state,
+            Followers: resp.data
+        })
+    })
+    .catch(err=> {
+        console.log(err);
+    })
+    this.setState({
+      ...this.state,
+      isLoading: true,
+  }); 
+}
+
   render() {
     return(
     <div>
         <nav className="nav-bar">
             <div className="left-links">
-                <Link className="link" to='/'>GITHUN INFO</Link>
+                <Link className="link" to='/'>GITHUB INFO</Link>
                 {/* <Link className="link" to='/products'>Products</Link>  */}
                 
             </div>
             <div className="right-links">
-                {/* <Link className="link" >Search</Link> */}
+            <Link onClick={this.handClick} className="link" to='/'>FOLLOWERS</Link>
                 <form className="link" >
                     <input 
                     placeholder="Github Handle"
@@ -51,7 +69,7 @@ class App extends React.Component {
         <div className="App">
           {/* <h1>Github Card</h1> */}
           <User user={this.state.User}/>
-          <FollowerList />
+          <FollowerList followers={this.state.Followers}/>
         </div>
       
     </div>);
